@@ -15,9 +15,10 @@ Expected output: text file with a list of findings
 
 - The given a scenario is a React FrontEnd with a Node/Express BackEnd application that needs to be deployed against a AWS ECS cluster.
 As a DevOps engineer, you will need to help the team to build and run it on docker locally. Please dockerize the frontend and backend  application.
+
 Tip: [Docker compose](https://docs.docker.com/compose/) can be used to orchestrate your containers.
 
-Expected output: Both applications running on docker container. pls provide the dockerfile or docker-compose.yml. 
+Expected output: Both applications running on docker container. please provide the dockerfile or docker-compose.yml. 
 
 # Task 3
 
