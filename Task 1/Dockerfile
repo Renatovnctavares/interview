@@ -1,12 +1,11 @@
 FROM ubuntu:14.04
 
+ARG DOCKERENV=dev
+
 RUN apt-get update
 
-ENV LANG C.UTF-8
-
-ARG DOCKERENV=testing
-
 COPY docker/newrelic/key.gpg key.gpg
+
 RUN echo 'deb http://apt.newrelic.com/debian/ newrelic non-free' | tee /etc/apt/sources.list.d/newrelic.list \
  && apt-key add key.gpg \
  && echo newrelic-php5 newrelic-php5/application-name string "$DOCKERENV" | debconf-set-selections \
@@ -46,7 +45,7 @@ RUN a2enmod php5 \
  && a2enmod rewrite \
  && a2enmod headers
 
-RUN if [ "$DOCKERENV" = "production" ]; then \
+RUN if [ "$DOCKERENV" = "uat" ]; then \
         apt-get install -y newrelic-php5; \
         newrelic-install install; \
         sed -i \
@@ -65,9 +64,9 @@ RUN sed -i 's/^ServerSignature/#ServerSignature/g' /etc/apache2/conf-enabled/sec
     echo "ServerSignature Off" >> /etc/apache2/conf-enabled/security.conf; \
     echo "ServerTokens Prod" >> /etc/apache2/conf-enabled/security.conf;
 
-COPY config/php/000-default.conf /etc/apache2/sites-enabled/000-default.conf
+COPY config/default.conf /etc/apache2/sites-enabled/000-default.conf
 
-COPY config/php/*.ini /etc/php5/apache2/
+COPY config/*.ini /etc/php5/apache2/
 
 WORKDIR /var/www/html
 
@@ -77,6 +76,6 @@ RUN composer install --prefer-dist --no-interaction
 
 COPY . ./
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
